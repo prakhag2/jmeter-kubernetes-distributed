@@ -29,11 +29,11 @@ If the target is a browser-based application then jmx files can be automatically
 
 The setup in this repo includes some additional plugins (see Dockerfile-base) like Blazemeter Concurrency Thread Group and [Throughput Shaper Timer](https://www.blazemeter.com/blog/jmeters-shaping-timer-plugin). Under concurrency thread group, you will setup concurrent threads based on the parameters described in the previous section. Note that these parameters are set on a per worker basis. Under throughput shaper timer, you will define how rps load will look like:
 
-![image](https://drive.google.com/file/d/1oGW_pFOXhamYNchFLZMlmhHZvBLY7gkI/view?usp=sharing)
+![image](https://drive.google.com/uc?export=view&id=1oGW_pFOXhamYNchFLZMlmhHZvBLY7gkI)
 
 Additionally, a backend listner also needs to be added that ties the listener to influxdb that will be created by the setup.
 
-![image](https://drive.google.com/file/d/1HshMNg8vRTnCFD5sqaKTeUbT0jpsfkIq/view?usp=sharing)
+![image](https://drive.google.com/uc?export=view&id=1HshMNg8vRTnCFD5sqaKTeUbT0jpsfkIq)
 
 For reference, refer /tests/online.jmx that includes all the aforementioned things.
 
@@ -48,6 +48,6 @@ When the test is running, you can face 2 types of errors:
 
 3. Errors in load test results (Failed Requests/Errors in Grafana) as shown below:
 
-![image](https://drive.google.com/file/d/1XF8fs4EuPgV66C3BMOKtPk7UFa6yLc3t/view?usp=sharing) 
+![image](https://drive.google.com/uc?export=view&id=1XF8fs4EuPgV66C3BMOKtPk7UFa6yLc3t) 
 
 Failed requests typically indicate application specific errors. For example, the responses might be timing out if the application isn't autoscaling quickly enough and/or pods have scheduling constraints such as cluster autoscaler reached its capacity or undergoing a scale out while requests keep coming in. Such errors will help you to right size the minimum number of pods that should be running to cater to a specific load as well as the optimum autoscaling profile.
