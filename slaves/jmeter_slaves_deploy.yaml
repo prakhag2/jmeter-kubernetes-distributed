@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jmeter-slaves
+  labels:
+    jmeter_mode: slave
+spec:
+  replicas: 40
+  selector:
+    matchLabels:
+      jmeter_mode: slave
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "12345"
+        prometheus.io/scrape: "true"
+      labels:
+        jmeter_mode: slave
+    spec:
+      containers:
+      - name: jmslave
+        image: gcr.io/kubetest-121b/jmeter-slave:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "2048Mi"
+            cpu: "2000m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2000m"
+        ports:
+        - containerPort: 1099
+        - containerPort: 50000

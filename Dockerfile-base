@@ -1,7 +1,6 @@
 FROM openjdk:8-jdk-slim
-MAINTAINER Kubernauts-lab
 		
-ARG JMETER_VERSION=5.0
+ARG JMETER_VERSION=5.5
 		
 RUN apt-get clean && \
 apt-get update && \
@@ -10,7 +9,8 @@ wget \
 telnet \
 iputils-ping \
 unzip
-RUN   mkdir /jmeter \
+
+RUN mkdir /jmeter \
 && cd /jmeter/ \
 && wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-$JMETER_VERSION.tgz \
 && tar -xzf apache-jmeter-$JMETER_VERSION.tgz \
@@ -20,8 +20,20 @@ RUN cd /jmeter/apache-jmeter-$JMETER_VERSION/ && wget -q -O /tmp/JMeterPlugins-S
 
 RUN wget -q -O /jmeter/apache-jmeter-$JMETER_VERSION/lib/ext/pepper-box-1.0.jar https://github.com/raladev/load/blob/master/JARs/pepper-box-1.0.jar?raw=true
 
-RUN cd /jmeter/apache-jmeter-$JMETER_VERSION/ && wget -q -O /tmp/bzm-parallel-0.7.zip https://jmeter-plugins.org/files/packages/bzm-parallel-0.7.zip && unzip -n /tmp/bzm-parallel-0.7.zip && rm /tmp/bzm-parallel-0.7.zip
+# bzm-parallel plugin install
+RUN cd /jmeter/apache-jmeter-$JMETER_VERSION/ && wget -q -O /tmp/bzm-parallel-0.7.zip https://jmeter-plugins.org/files/packages/bzm-parallel-0.7.zip && unzip -n /tmp/bzm-parallel-0.7.zip && rm /tmp/bzm-parallel-0.7.zip 
+
+# Throughput shaping plugin
+RUN cd /jmeter/apache-jmeter-$JMETER_VERSION/ && wget -q -O /tmp/jpgc-tst-2.5.zip https://jmeter-plugins.org/files/packages/jpgc-tst-2.5.zip && unzip -n /tmp/jpgc-tst-2.5.zip && rm /tmp/jpgc-tst-2.5.zip
+
+# Concurrency thread group plugin
+RUN cd /jmeter/apache-jmeter-$JMETER_VERSION/ && wget -q -O /tmp/jpgc-casutg-2.10.zip https://jmeter-plugins.org/files/packages/jpgc-casutg-2.10.zip && unzip -n /tmp/jpgc-casutg-2.10.zip && rm /tmp/jpgc-casutg-2.10.zip
+
+# Prometheus exporter install
+RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar -P /tmp
+COPY prometheus/config.yaml /tmp/
 
 ENV JMETER_HOME /jmeter/apache-jmeter-$JMETER_VERSION/
 		
 ENV PATH $JMETER_HOME/bin:$PATH
+

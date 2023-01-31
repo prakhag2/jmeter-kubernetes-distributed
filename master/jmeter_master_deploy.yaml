@@ -1,0 +1,42 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: jmeter-master
+  labels:
+    jmeter_mode: master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      jmeter_mode: master
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "12345"
+        prometheus.io/scrape: "true"
+      labels:
+        jmeter_mode: master
+    spec:
+      containers:
+      - name: jmmaster
+        image: gcr.io/kubetest-121b/jmeter-master:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "4096Mi"
+            cpu: "4000m"
+          limits:
+            memory: "4096Mi"
+            cpu: "4000m"
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        volumeMounts:
+          - name: loadtest
+            mountPath: /load_test
+            subPath: "load_test"
+        ports:
+        - containerPort: 60000
+      volumes:
+      - name: loadtest 
+        configMap:
+         name: jmeter-load-test

@@ -1,0 +1,8 @@
+FROM gcr.io/kubetest-121b/jmeter-base:latest
+
+EXPOSE 1099 50000
+
+# Start with jmx monitoring and prometheus jmx exporter	
+# Prometheus exorter exposes scrapped metrics at <X>:12345/metrics	
+# Port to scrape (12345) is published as an annotation in the deployment file
+ENTRYPOINT JVM_ARGS='-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -javaagent:/tmp/jmx_prometheus_javaagent-0.17.2.jar=12345:/tmp/config.yaml' && export JVM_ARGS && $JMETER_HOME/bin/jmeter-server -Dserver.rmi.localport=50000 -Dserver_port=1099 -Jserver.rmi.ssl.disable=true 

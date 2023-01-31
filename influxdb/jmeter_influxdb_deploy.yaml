@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb-jmeter
+  labels:
+    app: influxdb-jmeter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb-jmeter
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9122"
+        prometheus.io/scrape: "true"
+      labels:
+        app: influxdb-jmeter
+    spec:
+      containers:
+        - image: influxdb:1.8
+          imagePullPolicy: IfNotPresent
+          name: influxdb
+          volumeMounts:
+          - name: config-volume
+            mountPath: /etc/influxdb
+          ports:
+            - containerPort: 8083
+              name: influx
+            - containerPort: 8086
+              name: api
+            - containerPort: 2003
+              name: graphite
+        #- image: prom/influxdb-exporter
+        #  imagePullPolicy: IfNotPresent
+        #  name: influxdb-exporter
+        #  ports:
+        #    - containerPort: 9122
+        #      name: sidecar
+      volumes:
+      - name: config-volume
+        configMap:
+         name: influxdb-config

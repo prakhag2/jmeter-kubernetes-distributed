@@ -1,0 +1,3 @@
+FROM gcr.io/kubetest-121b/jmeter-base:latest
+
+EXPOSE 60000
