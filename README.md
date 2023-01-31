@@ -42,6 +42,9 @@ For reference, refer /tests/online.jmx that includes all the aforementioned thin
 - Run scripts/start_test.sh: Start the actual test after underlying infrastructure has been created. Give relative path to the jmx file for your test.
 - A Grafana monitoring service is created with 3 dashboards (under Dashboards -> General). To find the monitoring service, look at GKE -> Services (under ltmonitoring namespace).
 
+## How to re-run
+In order to re-run the test, it's recommended to delete the namespaces used earlier (ltmonitoring for monitoring resources and the user-defined namespace for running jmeter master & workers). Once done, run scripts/setup.js, re-use the already created cluster and re-create the namespace.
+
 ## Things to watch out for
 When the test is running, you can face 2 types of errors:
 1. Jmeter worker error (you can monitor jmeter worker pods under the namespace you had chosen earlier). If the workers are abruptly and regularly shutting down then most likely you have configured higher number of threads or requests that the worker can handle. In such cases the worker will shut down if there is OOM. Alternatively if the CPU is throttled then you'll not see worker reaching the numbers you have set under Concurrency Thread Group or Throughput Shaper. 
