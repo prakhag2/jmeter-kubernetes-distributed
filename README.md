@@ -25,12 +25,14 @@ By adding master-workers in different namespaces you can mimic horizontal scalin
 ## How to automatically generate jmx files
 If the target is a browser-based application then jmx files can be automatically generated using [Blazemeter Chrome Recorder Extension](https://guide.blazemeter.com/hc/en-us/articles/206732579-The-BlazeMeter-Chrome-Extension-Record-JMeter-Selenium-or-Synchronized-JMeter-and-Selenium) and [JMX Converter](https://converter.blazemeter.com/). Note that the produced jmx script will not be in the same form as produced in "tests/". The jmx script will not have any backend listeners and additional plugins made available in this setup. The easiest way to include these additional options is to use the [jmeter GUI](https://jmeter.apache.org/usermanual/get-started.html#running) and [jmeter plugins](https://www.blazemeter.com/blog/jmeter-plugins-manager) (described below). Move the generated test in the following structure:
 
-![image](https://drive.google.com/file/d/1rq6SQm6MKrtytF9Id_ZiATZHp_wz_TUn/view)
+![image](https://drive.google.com/uc?export=view&id=1rq6SQm6MKrtytF9Id_ZiATZHp_wz_TUn)
 
 The setup in this repo includes some additional plugins (see Dockerfile-base) like Blazemeter Concurrency Thread Group and [Throughput Shaper Timer](https://www.blazemeter.com/blog/jmeters-shaping-timer-plugin). Under concurrency thread group, you will setup concurrent threads based on the parameters described in the previous section. Note that these parameters are set on a per worker basis. Under throughput shaper timer, you will define how rps load will look like:
+
 ![image](https://drive.google.com/file/d/1oGW_pFOXhamYNchFLZMlmhHZvBLY7gkI/view?usp=sharing)
 
 Additionally, a backend listner also needs to be added that ties the listener to influxdb that will be created by the setup.
+
 ![image](https://drive.google.com/file/d/1HshMNg8vRTnCFD5sqaKTeUbT0jpsfkIq/view?usp=sharing)
 
 For reference, refer /tests/online.jmx that includes all the aforementioned things.
@@ -45,5 +47,7 @@ When the test is running, you can face 2 types of errors:
 1. Jmeter worker error (you can monitor jmeter worker pods under the namespace you had chosen earlier). If the workers are abruptly and regularly shutting down then most likely you have configured higher number of threads or requests that the worker can handle. In such cases the worker will shut down if there is OOM. Alternatively if the CPU is throttled then you'll not see worker reaching the numbers you have set under Concurrency Thread Group or Throughput Shaper. 
 
 3. Errors in load test results (Failed Requests/Errors in Grafana) as shown below:
+
 ![image](https://drive.google.com/file/d/1XF8fs4EuPgV66C3BMOKtPk7UFa6yLc3t/view?usp=sharing) 
+
 Failed requests typically indicate application specific errors. For example, the responses might be timing out if the application isn't autoscaling quickly enough and/or pods have scheduling constraints such as cluster autoscaler reached its capacity or undergoing a scale out while requests keep coming in. Such errors will help you to right size the minimum number of pods that should be running to cater to a specific load as well as the optimum autoscaling profile.
